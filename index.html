@@ -582,6 +582,7 @@ header .secondary{background:#ffffff18;color:#fff;border:1px solid #ffffff35}
 <div class="modal hidden" id="winnerModal"><div class="modal-box"><h2>🏆 BRAVO !</h2><div class="winner" id="winnerName"></div><p id="winnerText"></p><div class="fun" id="winnerFun"></div><button class="primary" id="winnerNewGame">🔥 Nouvelle partie</button></div></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  
 <script>
 const SUPABASE_URL = "https://rxcgdzfsucarycpaofzh.supabase.co";
 const SUPABASE_KEY = "sb_publishable_PwFys3OfZktVTtzAdP44PA_q8_0gXa2";
@@ -998,5 +999,5 @@ function openRules(){editRules={...state.rules};$("rulesTitle").textContent=T().
 function drawRules(){ensureCanastaCustomRules();let fr=mode==="FR",names=fr?{canastaNormal:"Canasta 4 → Roi",canastaAce:"Canasta d’As",canastaWildNormal:"Canasta Valeurs 4 → Roi",canastaWildAce:"Canasta Valeurs d’As",canasta3:"Canasta de 3",canastaValues:"Canasta de valeurs",red3:"3 rouge",turned:"Carte retournée",close:"Fermeture"}:{canastaNormal:"Canasta 4 → Rege",canastaAce:"Canasta de Ași",canastaWildNormal:"Canasta de valori 4 → Rege",canastaWildAce:"Canasta de valori de Ași",canasta3:"Canasta de 3",canastaValues:"Canasta de valori",red3:"3 roșu",turned:"Carte întoarsă",close:"Închidere"};let o=Object.keys(editRules).map(k=>`<div class="admin"><label>${esc(names[k]||k)}</label><input type="number" data-r="${esc(k)}" value="${editRules[k]}"><button class="danger" data-d="${esc(k)}">${T().delete}</button></div>`).join("");o+=`<button class="secondary" id="addRule">+ ${fr?"Ajouter une règle":"Adaugă o regulă"}</button>`;$("ruleEditor").innerHTML=o;document.querySelectorAll("[data-r]").forEach(x=>x.oninput=()=>editRules[x.dataset.r]=parseInt(x.value||0,10)||0);document.querySelectorAll("[data-d]").forEach(x=>x.onclick=()=>{delete editRules[x.dataset.d];drawRules()});$("addRule").onclick=()=>{let n=prompt(fr?"Nom de la règle :":"Numele regulii:");if(!n)return;let v=parseInt(prompt(fr?"Valeur en points :":"Valoare în puncte:"),10);editRules[n]=Number.isFinite(v)?v:0;drawRules()}}
 $("history").onclick=e=>{let b=e.target.closest("[data-history]");if(!b)return;let d=$("detail-"+b.dataset.history);d.classList.toggle("hidden");b.textContent=d.classList.contains("hidden")?T().roundDetail:T().hideDetail};
 $("rulesBtn").onclick=openRules;$("closeRules").onclick=()=>show("game");$("saveRules").onclick=()=>{db.rules[mode]={...editRules};state.rules={...editRules};db.current=state;save();show("game");renderGame()};$("resetRules").onclick=()=>{editRules={...DEF[mode]};drawRules()};
-apply();renderArchive();
+async function init(){   await loadFromSupabase();   apply();   renderArchive(); }  init();
 </script></body></html>
