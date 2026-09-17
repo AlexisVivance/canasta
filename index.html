@@ -1,0 +1,1228 @@
+<!DOCTYPE html>
+<html lang="fr">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width,initial-scale=1" name="viewport"/>
+  <title>
+   Canasta Score
+  </title>
+  <style>
+   :root{--bg:#f6f0e7;--card:#fff;--ink:#2d2926;--muted:#776f68;--red:#b52d3a;--gold:#c58b32;--line:#eadfd2}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,sans-serif}.app{max-width:1500px;margin:auto;padding:18px}
+header{position:relative;display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}.brand{font-size:28px;font-weight:900}.brand span{color:var(--red)}.sub{color:var(--muted);font-size:13px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:20px;margin-bottom:15px;box-shadow:0 10px 30px #4b32120f}.hero{text-align:center;padding:35px 20px}.hero h1{font-size:42px;margin:0 0 8px}.hero p{color:var(--muted)}
+.mode-grid,.score-grid,.round-grid,.player-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.mode{background:#fff;border:2px solid var(--line);border-radius:18px;padding:24px;text-align:left}.mode:hover{border-color:var(--gold);transform:translateY(-2px)}.mode .ico{font-size:32px}.mode strong{display:block;font-size:20px;margin-top:7px}.mode small{color:var(--muted)}
+button,input,select{font:inherit}button{cursor:pointer}.actions{display:flex;gap:9px;flex-wrap:wrap}.primary,.secondary,.danger,.mini{border:0;border-radius:11px;padding:10px 14px;font-weight:800}.round-info{width:38px;height:38px;padding:0;border-radius:50%;font-weight:900}.primary{background:var(--red);color:#fff}.secondary{background:#f1e9df;color:var(--ink)}.danger{background:#fbe6e7;color:#9e2531}.mini{width:40px;height:35px;padding:0;background:#faf6f0;border:1px solid var(--line)}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.between{justify-content:space-between}.field{flex:1;min-width:170px}label{display:block;font-size:13px;font-weight:800;margin-bottom:5px}input,select{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:11px;background:#fff}
+.section-title{font-size:18px;font-weight:900;margin-bottom:13px}.player{border:1px solid var(--line);border-radius:17px;padding:15px}.player h3{margin:0}.bigscore{font-size:30px;font-weight:900}.bar{height:8px;background:#eee5db;border-radius:99px;overflow:hidden;margin-top:8px}.bar i{display:block;height:100%;background:var(--red)}
+.player-round{border:1px solid var(--line);border-radius:18px;padding:15px}.player-round h3{margin:0 0 10px}.counter{display:grid;grid-template-columns:1fr 40px 44px 40px 62px;gap:6px;align-items:center;padding:12px 0;margin-bottom:4px;border-bottom:1px solid #f0e8df}
+.card-count-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 12px;margin-top:10px}.card-count-grid .counter{grid-template-columns:minmax(0,1fr) 24px 30px 24px 48px;gap:4px;padding:9px 0;margin:0}.card-count-grid .ctext{min-width:0}.card-count-grid .ctext span{display:block;overflow-wrap:anywhere}.card-count-grid .mini{padding:5px 2px}.card-count-grid .pts{font-size:11px}
+@media(max-width:720px){.card-count-grid{grid-template-columns:1fr}}.calc-column .section-title{margin-top:24px}.calc-column .section-title:first-child{margin-top:0}.count{text-align:center;font-weight:900}.pts{text-align:right;color:var(--muted);font-size:12px;font-weight:800}.free{display:flex;gap:8px;align-items:center;margin-top:8px}.free input{max-width:160px}.info{background:#faf5ee;border:1px dashed #dfcdb9;border-radius:12px;padding:10px;color:var(--muted);font-size:13px}.closer{display:flex;gap:8px;flex-wrap:wrap}.closer button{border:1px solid var(--line);background:#fff;border-radius:12px;padding:10px 14px;font-weight:800}.closer button.active{background:var(--red);color:#fff;border-color:var(--red)}
+.history-item{border-bottom:1px solid var(--line);padding:11px 0}.history-head{display:grid;grid-template-columns:55px 1fr auto;gap:10px;align-items:center}.history-detail{margin:10px 0 4px 55px;background:#faf7f2;border-radius:12px;padding:10px 12px;font-size:13px}.history-detail div{padding:3px 0}.history-toggle{border:1px solid var(--line);background:#fff;border-radius:9px;padding:6px 9px;font-weight:800}.live-check{display:flex;justify-content:space-between;padding:9px 11px;border-radius:11px;font-weight:800;margin:10px 0 2px}.quick-points{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}.quick-points button{border:1px solid var(--line);background:#fff;border-radius:9px;padding:7px 11px;font-weight:800;cursor:pointer}.live-total{display:flex;justify-content:space-between;padding:10px 12px;border-radius:12px;font-weight:900;margin-top:8px}.ok{background:#e9f7ee;color:#237346}.bad{background:#fdebed;color:#a52a36}.archive-item{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;border-bottom:1px solid var(--line);padding:12px 0}.archive-item:last-child{border-bottom:0}.archive-actions{display:flex;gap:7px}.modal{position:fixed;inset:0;background:#19120e99;display:flex;align-items:center;justify-content:center;padding:20px;z-index:9}.modal-box{background:#fff;border-radius:24px;padding:30px;max-width:520px;width:100%;text-align:center}.winner{font-size:23px;font-weight:900;color:var(--red)}.fun{margin:18px 0;padding:16px;background:#fff7e8;border-radius:14px;font-weight:800}.admin{display:grid;grid-template-columns:1fr 120px auto;gap:8px;align-items:center;margin:8px 0}
+.hidden{display:none!important}
+@media(max-width:720px){.app{padding:12px}.mode-grid,.score-grid,.round-grid,.player-grid{grid-template-columns:1fr}.hero h1{font-size:34px}.counter{grid-template-columns:1fr 36px 40px 36px 55px}.history-item{grid-template-columns:42px 1fr}}
+
+/* ⓘ Règles / Comment jouer : contenu défilable */
+#rulesInfoModal{
+  align-items:flex-start;
+  overflow-y:auto;
+}
+#rulesInfoModal .modal-box{
+  max-height:calc(100vh - 40px);
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+}
+#rulesInfoModal #roundInfoContent{
+  overflow-y:auto;
+  flex:1 1 auto;
+  min-height:0;
+  padding-right:8px;
+  -webkit-overflow-scrolling:touch;
+}
+#rulesInfoModal #roundInfoContent::-webkit-scrollbar{
+  width:8px;
+}
+
+/* ===== Canasta — visual refresh / logo only ===== */
+:root{
+  --cream:#fbf6eb;
+  --paper:#fffdf8;
+  --ink:#332d28;
+  --muted:#786f67;
+  --red:#a52f36;
+  --red-soft:#f7e4e2;
+  --gold:#c7973e;
+  --gold-soft:#f6ecd5;
+  --line:#eadfce;
+  --shadow:0 12px 32px rgba(74,55,35,.10);
+  --shadow-soft:0 5px 18px rgba(74,55,35,.08);
+}
+
+body{
+  background:
+    radial-gradient(circle at 15% 10%, rgba(199,151,62,.10), transparent 28%),
+    radial-gradient(circle at 90% 0%, rgba(165,47,54,.08), transparent 30%),
+    linear-gradient(180deg,#fffaf1 0%,var(--cream) 100%);
+  color:var(--ink);
+}
+
+.card{
+  background:rgba(255,253,248,.94);
+  border:1px solid var(--line);
+  border-radius:22px;
+  box-shadow:var(--shadow-soft);
+  backdrop-filter:blur(6px);
+}
+.card:hover{box-shadow:var(--shadow)}
+
+button{
+  border-radius:14px;
+  transition:transform .16s ease,box-shadow .16s ease,background .16s ease;
+}
+button:hover{transform:translateY(-1px)}
+button:active{transform:translateY(0)}
+
+input,select{
+  border-radius:12px;
+  border:1px solid #dfd2c1;
+  background:#fffefa;
+}
+input:focus,select:focus{
+  outline:none;
+  border-color:var(--gold);
+  box-shadow:0 0 0 3px rgba(199,151,62,.14);
+}
+
+.section-title{
+  color:var(--red);
+  letter-spacing:.2px;
+}
+h2,h3{letter-spacing:-.3px}
+hr{border:0;border-top:1px solid var(--line)}
+
+.info{
+  background:linear-gradient(135deg,#fffdf8,#fbf5e9);
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:12px 14px;
+  line-height:1.55;
+}
+.modal-box{
+  border-radius:24px;
+  border:1px solid var(--line);
+  box-shadow:0 22px 60px rgba(52,38,25,.20);
+}
+
+/* ===== Logo Canasta — cartes/dominos stylisés ===== */
+header{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  margin-bottom:18px;
+  min-height:118px;
+  position:relative;
+}
+header > .actions{
+  display:flex;
+  position:absolute;
+  right:0;
+  top:8px;
+  z-index:10;
+}
+header > div:not(.brand-mark):not(.actions){display:none}
+header > .actions{display:flex;position:absolute;right:0;top:8px;z-index:10}
+header > .brand-mark{
+  width:min(100%,720px);
+  height:108px;
+  margin:0 auto;
+  position:relative;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+/* Le texte historique reste masqué, mais les boutons d'action restent accessibles. */
+header > div:not(.brand-mark):not(.actions){display:none}
+header > .actions{display:flex}
+
+.brand-mark .brand-card,
+.brand-mark .brand-domino{
+  position:absolute;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:linear-gradient(145deg,#fffefa,#f4ede3);
+  border:1px solid #d8cbbb;
+  box-shadow:0 10px 20px rgba(54,39,25,.18), inset 0 1px 0 #fff;
+}
+
+/* Dominos verticaux : vrais pips, pas de chiffres */
+.brand-mark .brand-card{
+  width:48px;
+  height:70px;
+  top:13px;
+  border-radius:10px;
+  transform-origin:center bottom;
+}
+
+/* Le Joker reste au centre, légèrement plus grand */
+.brand-mark .brand-card:nth-child(3){
+  width:53px;
+  height:74px;
+  top:9px;
+  border-radius:11px;
+  font-size:29px;
+  z-index:5;
+  transform:translateY(-2px) rotate(0deg);
+}
+
+/* 1 jaune */
+.brand-mark .brand-card:nth-child(1){
+  transform:rotate(-15deg) translateX(-132px);
+  color:#d1a321;
+}
+.brand-mark .brand-card:nth-child(1)::after{
+  content:"";
+  width:12px;
+  height:12px;
+  border-radius:50%;
+  background:#d1a321;
+  box-shadow:0 1px 2px rgba(0,0,0,.18);
+}
+
+/* 7 rouge */
+.brand-mark .brand-card:nth-child(2){
+  transform:rotate(-7deg) translateX(-78px);
+  color:#b52d3a;
+  font-size:0;
+}
+.brand-mark .brand-card:nth-child(2)::after{
+  content:"";
+  width:100%;
+  height:100%;
+  position:absolute;
+  inset:0;
+  background:
+    radial-gradient(circle at 50% 15%,#b52d3a 0 5px,transparent 5.5px),
+    radial-gradient(circle at 25% 30%,#b52d3a 0 5px,transparent 5.5px),
+    radial-gradient(circle at 75% 30%,#b52d3a 0 5px,transparent 5.5px),
+    radial-gradient(circle at 50% 50%,#b52d3a 0 5px,transparent 5.5px),
+    radial-gradient(circle at 25% 70%,#b52d3a 0 5px,transparent 5.5px),
+    radial-gradient(circle at 75% 70%,#b52d3a 0 5px,transparent 5.5px),
+    radial-gradient(circle at 50% 85%,#b52d3a 0 5px,transparent 5.5px);
+}
+
+/* 3 noir */
+.brand-mark .brand-card:nth-child(4){
+  transform:rotate(8deg) translateX(78px);
+  color:#272421;
+  font-size:0;
+}
+.brand-mark .brand-card:nth-child(4)::after{
+  content:"";
+  width:100%;
+  height:100%;
+  position:absolute;
+  inset:0;
+  background:
+    radial-gradient(circle at 50% 20%,#272421 0 5px,transparent 5.5px),
+    radial-gradient(circle at 50% 50%,#272421 0 5px,transparent 5.5px),
+    radial-gradient(circle at 50% 80%,#272421 0 5px,transparent 5.5px);
+}
+
+/* Domino 2 à droite */
+.brand-mark .brand-domino{
+  width:48px;
+  height:65px;
+  top:17px;
+  transform:rotate(16deg) translateX(130px);
+  border-radius:9px;
+  color:#b52d3a;
+  font-size:0;
+  z-index:3;
+}
+.brand-mark .brand-domino::after{
+  content:"";
+  width:100%;
+  height:100%;
+  position:absolute;
+  inset:0;
+  background:
+    radial-gradient(circle at 50% 25%,#b52d3a 0 5px,transparent 5.5px),
+    radial-gradient(circle at 50% 75%,#b52d3a 0 5px,transparent 5.5px);
+}
+
+/* Séparation graphique discrète dans les dominos */
+.brand-mark .brand-card:nth-child(1)::before,
+.brand-mark .brand-card:nth-child(2)::before,
+.brand-mark .brand-card:nth-child(4)::before,
+.brand-mark .brand-domino::before{
+  content:"";
+  position:absolute;
+  left:9px;
+  right:9px;
+  top:50%;
+  height:1px;
+  background:#e3d7c8;
+  z-index:2;
+}
+
+/* Le Joker masque sa séparation */
+.brand-mark .brand-card:nth-child(3)::before{display:none}
+
+/* Wordmark stylisé intégré au logo */
+.brand-mark::after{
+  content:"Canasta";
+  position:absolute;
+  left:calc(50% + 155px);
+  top:50%;
+  transform:translateY(-53%);
+  font-family:Georgia,"Times New Roman",serif;
+  font-size:39px;
+  line-height:1;
+  font-weight:900;
+  font-style:italic;
+  letter-spacing:-2px;
+  color:#a52f36;
+  text-shadow:0 2px 0 #fff,0 6px 16px rgba(165,47,54,.14);
+  white-space:nowrap;
+}
+.brand-mark::before{
+  content:none;
+}
+
+#home .hero{padding-top:28px}
+#home .hero h1{display:none}
+#home .hero p{margin-top:0}
+
+@media (max-width:720px){
+  header{
+    min-height:92px;
+  }
+  header > .brand-mark{
+    height:82px;
+    width:100%;
+  }
+  .brand-mark .brand-card{
+    width:39px;
+    height:55px;
+    top:12px;
+    font-size:20px;
+  }
+  .brand-mark .brand-card:nth-child(1){transform:rotate(-17deg) translateX(-91px)}
+  .brand-mark .brand-card:nth-child(2){transform:rotate(-8deg) translateX(-56px)}
+  .brand-mark .brand-card:nth-child(3){font-size:23px}
+  .brand-mark .brand-card:nth-child(4){transform:rotate(8deg) translateX(56px)}
+  .brand-mark .brand-domino{
+    width:37px;
+    height:50px;
+    top:15px;
+    transform:rotate(16deg) translateX(91px);
+    font-size:18px;
+  }
+  .brand-mark::after{
+    left:calc(50% + 107px);
+    top:29px;
+    font-size:24px;
+    letter-spacing:-1px;
+  }
+  .brand-mark::before{
+    left:calc(50% + 195px);
+    top:27px;
+    font-size:13px;
+  }
+}
+
+
+/* ===== Accueil : bouton toujours visible hors accueil ===== */
+header > .actions{
+  display:flex !important;
+  position:absolute;
+  right:0;
+  top:8px;
+  z-index:50;
+}
+#homeBtn:not(.hidden),
+#rulesBtn:not(.hidden){
+  display:inline-flex !important;
+  align-items:center;
+  justify-content:center;
+}
+
+
+/* ===== Bouton Accueil : visibilité forcée ===== */
+#homeBtn{
+  display:inline-flex !important;
+  align-items:center;
+  justify-content:center;
+  background:#f1e9df;
+  color:#332d28;
+  border:1px solid #dfd2c1;
+  min-height:40px;
+  padding:9px 14px;
+  font-weight:800;
+}
+#homeBtn.hidden{display:inline-flex !important;}
+
+
+/* Joueur qui ferme : son pavé de cartes disparaît après sélection */
+.player-round.hidden{display:none!important}
+
+
+/* Proposition UX/UI : cartes compactes sur deux lignes */
+.card-count-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:12px}
+.card-count-grid .counter{display:grid;grid-template-columns:minmax(0,1fr) 25px 28px 25px;grid-template-areas:"label minus count plus";gap:4px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 7px;box-shadow:0 3px 10px #4b32120a}
+.card-count-grid .ctext{grid-area:label;font-weight:800;font-size:13px;line-height:1.2}
+.card-count-grid .counter>.mini:first-of-type{grid-area:minus}
+.card-count-grid .counter>.count{grid-area:count}
+.card-count-grid .counter>.mini:last-of-type{grid-area:plus}
+.card-count-grid .pts{display:none}
+.card-count-grid .mini{width:25px;height:30px;border-radius:8px;padding:0}
+.card-count-grid .count{font-size:14px}
+@media(max-width:1050px){.card-count-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:720px){.card-count-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+  </style>
+  <style>
+   .canasta-choice{margin-bottom:12px}
+.canasta-choice .closer{margin-top:6px}
+
+/* Mise en page du calcul d'une manche : deux colonnes équilibrées */
+.calc-columns{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:28px;align-items:start;margin-top:12px}
+.calc-column{min-width:0;overflow-wrap:anywhere}
+.calc-column .section-title{margin-top:0!important}
+.calc-columns .counter{grid-template-columns:minmax(0,1fr) 28px 34px 28px 54px;gap:5px}
+@media(max-width:720px){.calc-columns{grid-template-columns:1fr;gap:12px}.calc-columns .counter{grid-template-columns:1fr 36px 40px 36px 55px}}
+
+<style>
+/* La saisie d’une manche se fait joueur par joueur : le panneau doit occuper toute la largeur. */
+#roundPlayers{grid-template-columns:minmax(0,1fr)!important;display:grid!important;}
+#roundPlayersInputs{grid-template-columns:minmax(0,1fr)!important;}
+.calc-columns{width:100%;grid-template-columns:minmax(0,1fr) minmax(0,1fr);}
+.calc-column{min-width:0;}
+.calc-column .counter{min-width:0;}
+.calc-column .ctext{min-width:0;overflow-wrap:normal;word-break:normal;}
+  </style>
+  <style>
+   /* Espace de lecture au-dessus du bloc des cartes posées hors Canasta. */
+.calc-column .laid-section-title{margin-top:1cm!important;}
+.calc-column .hand-section-title{margin-top:1cm!important;}
+  </style>
+  <style id="canasta-ux-redesign">
+   /* ===== Refonte graphique UX/UI — inspirée de la maquette ===== */
+:root{
+  --navy:#173b67;
+  --navy-2:#24558a;
+  --blue-soft:#eef6ff;
+  --green:#159447;
+  --green-soft:#eaf8ef;
+  --yellow:#f4c84f;
+  --yellow-soft:#fff6d9;
+  --danger-soft:#fff0f1;
+}
+body{
+  background:linear-gradient(180deg,#f7fafc 0%,#edf3f8 100%);
+  color:#182b43;
+}
+.app{max-width:1700px;padding:24px 30px}
+header{
+  margin:-24px -30px 24px;
+  padding:22px 30px;
+  background:linear-gradient(110deg,var(--navy),#214e7d);
+  color:#fff;
+  box-shadow:0 8px 24px rgba(19,51,88,.18);
+}
+header .brand{font-size:30px;letter-spacing:-.7px;color:#fff}
+header .brand span{color:#ffd46a}
+header .sub{color:#dce9f7}
+header .brand-mark{filter:drop-shadow(0 4px 6px #0002)}
+header .secondary{background:#ffffff18;color:#fff;border:1px solid #ffffff35}
+.card{
+  background:#fff;
+  border:1px solid #dce8f2;
+  border-radius:18px;
+  box-shadow:0 8px 24px rgba(34,65,95,.07);
+}
+#game>.card:first-child{border:0;background:transparent;box-shadow:none;padding:8px 0}
+#game>.card:first-child .section-title{font-size:26px;color:var(--navy)}
+#game>.card:nth-child(2){padding:18px 20px}
+#scoreboard{gap:12px}
+.player{
+  background:linear-gradient(180deg,#fff 0%,#f8fbff 100%);
+  border:1px solid #d8e5f0;
+  border-radius:15px;
+  padding:17px;
+  box-shadow:0 4px 12px #173b670d;
+}
+.player h3{color:#49627b;font-size:15px}
+.bigscore{color:var(--navy);font-size:30px;letter-spacing:-.8px}
+.bar{background:#e4edf5;height:9px}.bar i{background:linear-gradient(90deg,#20a85b,#70d493)}
+#roundCard{padding:24px;overflow:visible}
+#roundCard>.row:first-child{padding-bottom:15px;border-bottom:1px solid #e5edf4}
+#roundCard>.row:first-child .section-title{font-size:25px;color:var(--navy)}
+#roundPlayers{gap:16px}
+#roundPlayers>.card{background:#f9fbfd;border:1px solid #dce8f2}
+#roundPlayersInputs .player-round{
+  background:#fff;
+  border:1px solid #d9e5ef;
+  border-radius:18px;
+  padding:22px;
+  box-shadow:0 6px 18px #173b670b;
+}
+#roundPlayersInputs .player-round>h3{font-size:24px;color:#173b67;margin-bottom:18px}
+.canasta-choice{background:#f2f7fc;border:1px solid #dceaf5;border-radius:14px;padding:15px;margin-bottom:18px}
+.canasta-choice .section-title{color:var(--navy);margin-bottom:10px}
+.closer button{background:#fff;border:1px solid #cbdbea!important;color:#23415f}
+.closer button.active{background:var(--green)!important;border-color:var(--green)!important;color:#fff!important}
+.info{background:#f4f8fc;border:1px solid #dce8f2;color:#536b83}
+.calc-columns{gap:22px;margin-top:18px}.calc-columns.single-column{grid-template-columns:1fr!important}
+.calc-column{background:#fbfdff;border:1px solid #e0eaf3;border-radius:15px;padding:16px}
+.calc-column .section-title{color:var(--navy);font-size:17px;letter-spacing:.1px}
+.calc-column .section-title:first-child{margin-top:0}
+.calc-column .laid-section-title,.calc-column .hand-section-title{margin-top:24px!important;padding-top:20px;border-top:1px solid #e2ebf3}
+.counter{border-bottom:1px solid #e8eff5!important;padding:10px 0!important}
+.ctext{color:#314b66;font-weight:750}
+.counter .mini{background:#edf5ff;border:1px solid #c5dbf1;color:#145ca7;font-size:18px;font-weight:900}
+.counter .count{color:#173b67;font-size:17px}
+.counter .pts{color:#71859a}
+.card-count-grid{gap:10px 12px!important}
+.card-count-grid .counter{background:#fff;border:1px solid #dce8f2!important;border-radius:12px;padding:11px 8px!important;box-shadow:0 3px 10px #173b6708}
+.live-total{background:#eaf8ef!important;color:#168044!important;border:1px solid #bce8cc;margin-top:18px;padding:14px 16px;font-size:17px}
+.live-check{border:1px solid #dce8f2}
+.free-title{color:var(--navy)!important;margin-top:20px!important;padding-top:16px;border-top:1px solid #e2ebf3}
+.free input{border:1px solid #cbdbea;background:#fff}
+.quick-points{gap:9px;margin-top:12px}
+.quick-points button{
+  min-width:70px;
+  padding:11px 14px;
+  border:1px solid #e4c45c;
+  background:linear-gradient(180deg,#ffda73,#f5c64a);
+  color:#513b08;
+  border-radius:11px;
+  box-shadow:0 3px 7px #c997271f;
+  font-size:15px;
+}
+.quick-points button:hover{box-shadow:0 5px 12px #c9972735}
+#validateBtn{background:linear-gradient(100deg,#1d73d7,#2b91ed);border-radius:13px;padding:14px 22px;font-size:16px;box-shadow:0 5px 14px #1d73d733}
+#roundBtn{background:#1d73d7;color:#fff}
+#newGameBtn{border:1px solid #f0c4c9}
+#historyTitle{color:var(--navy)}
+@media(min-width:1100px){
+  #roundPlayersInputs .player-round{padding:26px}
+  .card-count-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+}
+@media(max-width:900px){.app{padding:16px}header{margin:-16px -16px 18px;padding:18px 16px}.calc-columns{gap:14px}}
+  </style>
+  <style>
+   /* Lisibilité des libellés de cartes : éviter les mots coupés verticalement. */
+.card-count-grid .ctext span{white-space:nowrap;overflow-wrap:normal;word-break:normal;font-size:12px;}
+.card-count-grid .counter{min-width:0;}
+@media(min-width:1051px){.card-count-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;}}
+  </style>
+  <style>
+   /* Correctif lisibilité : le compteur reste clairement séparé des boutons. */
+.card-count-grid .counter{
+  grid-template-columns:minmax(0,1fr) 34px 48px 34px!important;
+  grid-template-areas:"label minus count plus"!important;
+  gap:6px!important;
+  padding:10px 8px!important;
+  align-items:center!important;
+}
+.card-count-grid .ctext{grid-area:label!important;min-width:0!important;font-size:12px!important;white-space:normal!important;overflow:hidden!important;}
+.card-count-grid .ctext span{white-space:normal!important;display:block!important;line-height:1.15!important;}
+.card-count-grid .counter>.mini:first-of-type{grid-area:minus!important;}
+.card-count-grid .counter>.count{grid-area:count!important;display:flex!important;align-items:center!important;justify-content:center!important;min-width:48px!important;width:48px!important;font-size:17px!important;font-weight:900!important;position:relative!important;z-index:2!important;}
+.card-count-grid .counter>.mini:last-of-type{grid-area:plus!important;}
+.card-count-grid .mini{width:34px!important;min-width:34px!important;height:34px!important;font-size:18px!important;}
+  </style>
+  <style>
+   /* Les compteurs de cartes occupent toute la largeur pour garder les deux boutons visibles. */
+.card-count-grid{grid-template-columns:minmax(0,1fr)!important;gap:10px!important;}
+.card-count-grid .counter{grid-template-columns:minmax(0,1fr) 38px 60px 38px!important;gap:8px!important;padding:11px 12px!important;}
+.card-count-grid .counter>.mini{width:38px!important;min-width:38px!important;height:36px!important;}
+.card-count-grid .counter>.count{width:60px!important;min-width:60px!important;}
+  </style>
+ </head>
+ <body>
+  <div class="app">
+   <header>
+    <div aria-label="Canasta" class="brand-mark">
+     <span class="brand-card card-red">
+      ♥
+     </span>
+     <span class="brand-card card-black">
+      7
+     </span>
+     <span class="brand-card card-gold">
+      🃏
+     </span>
+     <span class="brand-card card-black">
+      2
+     </span>
+     <span class="brand-domino">
+      ▐▐
+     </span>
+    </div>
+    <div>
+     <div class="brand">
+      Canasta
+      <span>
+       Score
+      </span>
+     </div>
+     <div class="sub" id="headSub">
+     </div>
+    </div>
+    <div class="actions">
+     <button class="secondary hidden" id="homeBtn">
+     </button>
+     <button class="secondary hidden" id="rulesBtn">
+     </button>
+    </div>
+   </header>
+   <section id="home">
+    <div class="card hero">
+     <h1>
+      🃏 Canasta Score
+     </h1>
+     <p id="homeIntro">
+     </p>
+     <div class="mode-grid">
+      <button class="mode" data-mode="FR">
+       <div class="ico">
+        🇫🇷
+       </div>
+       <strong>
+        Partie FR
+       </strong>
+       <small>
+        Canasta – Cartes &amp; Dominos · interface française
+       </small>
+      </button>
+      <button class="mode" data-mode="RO">
+       <div class="ico">
+        🇷🇴
+       </div>
+       <strong>
+        Partidă RO
+       </strong>
+       <small>
+        Canasta – Cărți &amp; Domino · interfață în limba română
+       </small>
+      </button>
+     </div>
+    </div>
+   </section>
+   <section class="hidden" id="modeMenu">
+    <div class="card">
+     <div class="section-title" id="modeMenuTitle">
+     </div>
+     <div class="actions" style="margin-top:15px">
+      <button class="primary" id="newModeGameBtn">
+      </button>
+      <button class="secondary" id="finishedModeBtn">
+      </button>
+     </div>
+    </div>
+    <div class="card">
+     <div class="section-title" id="archiveTitle">
+     </div>
+     <div id="archiveList">
+     </div>
+    </div>
+    <div class="card hidden" id="finishedCard">
+     <div class="section-title" id="finishedTitle">
+     </div>
+     <div id="finishedList">
+     </div>
+    </div>
+   </section>
+   <section class="hidden" id="setup">
+    <div class="card">
+     <div class="section-title" id="setupTitle">
+     </div>
+     <div class="row">
+      <div class="field">
+       <label id="nameLabel">
+       </label>
+       <input id="gameName"/>
+      </div>
+      <div class="field">
+       <label id="playersLabel">
+       </label>
+       <select id="playerCount">
+        <option>
+         2
+        </option>
+        <option>
+         3
+        </option>
+        <option>
+         4
+        </option>
+       </select>
+      </div>
+     </div>
+     <div class="player-grid" id="playerInputs" style="margin-top:14px">
+     </div>
+     <div class="actions" style="margin-top:16px">
+      <button class="primary" id="startBtn">
+      </button>
+      <button class="secondary" id="backBtn">
+      </button>
+     </div>
+    </div>
+   </section>
+   <section class="hidden" id="game">
+    <div class="card">
+     <div class="row between">
+      <div>
+       <div class="section-title" id="gameTitle">
+       </div>
+       <div class="sub" id="gameMeta">
+       </div>
+      </div>
+      <div class="actions">
+       <button class="secondary hidden" id="backFinishedBtn">
+       </button>
+       <button class="secondary" id="roundBtn">
+       </button>
+       <button class="danger" id="newGameBtn">
+       </button>
+      </div>
+     </div>
+    </div>
+    <div class="card">
+     <div class="section-title" id="scoreTitle">
+     </div>
+     <div class="score-grid" id="scoreboard">
+     </div>
+    </div>
+    <div class="card hidden" id="roundCard">
+     <div class="row between">
+      <div>
+       <div class="section-title" id="roundTitle">
+       </div>
+       <div class="sub" id="roundSub">
+       </div>
+      </div>
+      <div class="actions">
+       <button class="secondary" id="roundInfoBtn" type="button">
+        ⓘ
+       </button>
+       <button class="secondary" id="cancelBtn">
+       </button>
+      </div>
+     </div>
+     <div class="round-grid" id="roundPlayers" style="margin-top:15px">
+     </div>
+     <div class="card" style="background:#faf7f2;box-shadow:none;margin-top:15px">
+      <div class="section-title" id="turnedTitle">
+      </div>
+      <div class="row">
+       <div class="field">
+        <label id="valueLabel">
+        </label>
+        <select id="turnedValue">
+        </select>
+       </div>
+       <div class="field">
+        <label id="suitLabel">
+        </label>
+        <select id="turnedSuit">
+        </select>
+       </div>
+       <div class="field">
+        <label id="ownerLabel">
+        </label>
+        <select id="turnedOwner">
+        </select>
+       </div>
+      </div>
+      <div class="info" id="turnedInfo" style="margin-top:9px">
+      </div>
+     </div>
+     <button class="primary" id="validateBtn">
+     </button>
+    </div>
+    <div class="card">
+     <div class="section-title" id="historyTitle">
+     </div>
+     <div id="history">
+     </div>
+    </div>
+   </section>
+   <section class="hidden" id="rules">
+    <div class="card">
+     <div class="row between">
+      <div>
+       <div class="section-title" id="rulesTitle">
+       </div>
+       <div class="sub" id="rulesIntro">
+       </div>
+      </div>
+      <button class="secondary" id="closeRules">
+      </button>
+     </div>
+     <div id="ruleEditor" style="margin-top:15px">
+     </div>
+     <div class="actions" style="margin-top:12px">
+      <button class="primary" id="saveRules">
+      </button>
+      <button class="secondary" id="resetRules">
+      </button>
+     </div>
+    </div>
+   </section>
+  </div>
+  <div class="modal hidden" id="rulesInfoModal">
+   <div class="modal-box" style="text-align:left;max-width:680px">
+    <div class="row between">
+     <h2 id="roundInfoTitle" style="margin:0">
+     </h2>
+     <button class="secondary" id="closeRoundInfo">
+      ✕
+     </button>
+    </div>
+    <div id="roundInfoContent" style="margin-top:16px">
+    </div>
+   </div>
+  </div>
+  <div class="modal hidden" id="winnerModal">
+   <div class="modal-box">
+    <h2>
+     🏆 BRAVO !
+    </h2>
+    <div class="winner" id="winnerName">
+    </div>
+    <p id="winnerText">
+    </p>
+    <div class="fun" id="winnerFun">
+    </div>
+    <button class="primary" id="winnerNewGame">
+     🔥 Nouvelle partie
+    </button>
+   </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
+  </script>
+  <script>
+   const SUPABASE_URL = "https://rxcgdzfsucarycpaofzh.supabase.co";
+const SUPABASE_KEY = "sb_publishable_PwFys3OfZktVTtzAdP44PA_q8_0gXa2";
+
+const supabaseClient = supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
+  
+const KEY="canasta_score_v4";
+const DEF={FR:{canastaNormal:500,canastaAce:1000,canastaWildNormal:300,canastaWildAce:500,red3:100,turned:50,close:200},RO:{canastaNormal:500,canastaAce:1000,canastaWildNormal:300,canastaWildAce:500,red3:100,turned:50,close:200}};
+const TEXT={
+FR:{
+can3:"Canasta de 3",canValues:"Canasta de valeurs",
+sub:"Votre carnet de score",intro:"Jouez avec vos vraies cartes ou vos dominos. L’application calcule et conserve les scores.",
+home:"Accueil",rules:"⚙️ Règles",saved:"Partie sauvegardée",resume:"Reprendre",
+setup:"🇫🇷 Canasta – Cartes & Dominos",name:"Nom de la partie",players:"Nombre de joueurs",start:"Commencer la partie",back:"Retour",
+score:"🏆 Score",round:"+ Nouvelle manche",newgame:"Nouvelle partie",roundTitle:"Fin de manche",roundSub:"Comptez rapidement les cartes de la manche.",
+cancel:"Annuler",turned:"🎴 Carte retournée",value:"Valeur",suit:"Couleur / enseigne",owner:"Correspondance exacte",none:"Aucune / personne",
+closer:"🚪 Qui ferme la manche ?",validate:"Valider la manche",history:"📜 Historique des manches",noHistory:"Aucune manche enregistrée.",
+mustClose:"Le joueur qui ferme doit avoir au moins une Canasta.",turnDouble:"Joker ou 2 : toute la manche sera doublée.",
+turnNormal:"Correspondance exacte : +50 avec Canasta, −50 sans Canasta.",turnNone:"Aucune carte retournée sélectionnée.",
+rulesTitle:"⚙️ Règles / Administration",rulesIntro:"Les changements servent aux futures parties. Chaque partie garde une copie de ses règles.",
+save:"Enregistrer",reset:"Réinitialiser",free:"Résultat libre",freeHelp:"Ajouté au score calculé",delete:"Supprimer",
+archive:"💾 Parties sauvegardées",finished:"🏆 Parties finies",noArchive:"Aucune partie sauvegardée.",noFinished:"Aucune partie finie.",
+view:"Voir",roundDetail:"Voir le détail",hideDetail:"Masquer le détail",backFinished:"← Retour aux parties finies",infoTitle:"ⓘ Règles / Comment jouer",infoClose:"Fermer"
+},
+RO:{
+can3:"Canasta de 3",canValues:"Canasta de valori",
+sub:"Carnetul tău de scor",intro:"Joacă cu cărți sau domino. Aplicația calculează și păstrează scorurile.",
+home:"Acasă",rules:"⚙️ Reguli",saved:"Partidă salvată",resume:"Continuă",
+setup:"🇷🇴 Canasta – Cărți & Domino",name:"Numele partidei",players:"Număr de jucători",start:"Începe partida",back:"Înapoi",
+score:"🏆 Scor",round:"+ Manșă nouă",newgame:"Partidă nouă",roundTitle:"Sfârșitul manșei",roundSub:"Numără rapid cărțile din manșă.",
+cancel:"Anulează",turned:"🎴 Cartea întoarsă",value:"Valoare",suit:"Culoare / simbol",owner:"Potrivire exactă",none:"Nimeni / nimic",
+closer:"🚪 Cine închide manșa?",validate:"Salvează manșa",history:"📜 Istoricul manșelor",noHistory:"Nicio manșă înregistrată.",
+mustClose:"Jucătorul care închide trebuie să aibă cel puțin o Canasta.",turnDouble:"Joker sau 2: toată manșa va fi dublată.",
+turnNormal:"Potrivire exactă: +50 cu Canasta, −50 fără Canasta.",turnNone:"Nicio carte întoarsă selectată.",
+rulesTitle:"⚙️ Reguli / Administrare",rulesIntro:"Modificările se folosesc pentru partidele viitoare. Fiecare partidă păstrează propria copie a regulilor.",
+save:"Salvează",reset:"Resetează",free:"Rezultat liber",freeHelp:"Adăugat la scorul calculat",delete:"Șterge",
+archive:"💾 Partide salvate",finished:"🏆 Partide finalizate",noArchive:"Nicio partidă salvată.",noFinished:"Nicio partidă finalizată.",
+view:"Vezi",roundDetail:"Vezi detaliile",hideDetail:"Ascunde detaliile",backFinished:"← Înapoi la partidele finalizate",infoTitle:"ⓘ Reguli / Cum se joacă",infoClose:"Închide"
+}};
+
+const FUN={FR:["Le perdant offre un massage de 10 minutes.","Le perdant cuisine ce soir, menu choisi par le champion.","Le perdant fait la vaisselle.","Le champion choisit le film.","Le perdant offre une pizza.","Le perdant dit : « Je suis nul à la Canasta. »","Le perdant apporte le prochain café.","Le champion choisit la musique.","Le perdant fait les courses.","Le perdant offre le dessert.","Le champion prend le meilleur canapé.","Le perdant appelle le champion « Maître de la Canasta » pendant 10 minutes.","Victoire écrasante. 😎","Le cerveau est en mode Turbo.","10 000 points ! L’ego peut prendre des vacances.","Médaille virtuelle décernée 🥇"],RO:["Pierzătorul oferă un masaj de 10 minute.","Pierzătorul gătește în seara asta. Campionul alege meniul.","Pierzătorul spală vasele.","Campionul alege filmul.","Pierzătorul oferă pizza.","Pierzătorul spune: « Sunt slab la Canasta. »","Pierzătorul aduce următoarea cafea.","Campionul alege muzica.","Pierzătorul face cumpărăturile.","Pierzătorul oferă desertul.","Campionul primește cel mai bun loc pe canapea.","Pierzătorul spune « Maestrul Canastei » timp de 10 minute.","Victorie zdrobitoare. 😎","Creierul este în modul Turbo.","10.000 de puncte! Eul poate pleca în vacanță.","Medalie virtuală acordată 🥇"]};
+let db=JSON.parse(localStorage.getItem(KEY)||"null");
+if(!db)db={current:null,games:[],rules:{FR:{...DEF.FR},RO:{...DEF.RO}}};
+if(!db.rules)db.rules={FR:{...DEF.FR},RO:{...DEF.RO}};
+if(!db.games)db.games=[];
+if(db.current&&!db.games.some(g=>g.id===db.current.id))db.games.push(db.current);
+let state=null,mode="FR",editRules=null,viewingFinished=false;
+const $=id=>document.getElementById(id),esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])),fmt=n=>Number(n).toLocaleString(mode==="FR"?"fr-FR":"ro-RO"),T=()=>TEXT[mode];
+async function save()
+
+{   localStorage.setItem(KEY,JSON.stringify(db));    const { error } = await supabaseClient     .from("games")     .upsert({       id: "00000000-0000-0000-0000-000000000001",       name: "canasta",       data: db     });    if(error) {   console.error("Erreur Supabase :", error);   throw error; } }
+async function loadFromSupabase(){
+  const { data, error } = await supabaseClient
+    .from("games")
+    .select("data")
+    .eq("id", "00000000-0000-0000-0000-000000000001")
+    .single();
+
+  if(error){
+    console.error("Erreur chargement Supabase :", error);
+    return;
+  }
+
+  if(data?.data){
+    db = data.data;
+    localStorage.setItem(KEY, JSON.stringify(db));
+    console.log("Données chargées depuis Supabase !");
+  }
+}
+  function upsertGame(g){
+  g.finished=(g.players||[]).some(p=>Number(p.total||0)>=10000);
+  let i=db.games.findIndex(x=>x.id===g.id);
+  if(i<0)db.games.push(g);else db.games[i]=g;
+  db.current=g;
+}
+function dateTime(v){
+  if(!v)return "—";
+  return new Date(v).toLocaleString(mode==="FR"?"fr-FR":"ro-RO",{dateStyle:"medium",timeStyle:"short"});
+}
+function gameDuration(g){
+  if(!g?.startDate || !g?.endDate)return "";
+  let ms=new Date(g.endDate)-new Date(g.startDate);
+  if(!Number.isFinite(ms)||ms<0)return "";
+  let total=Math.floor(ms/60000),d=Math.floor(total/1440),h=Math.floor((total%1440)/60),m=total%60;
+  return d?`${d} j ${h} h ${m} min`:h?`${h} h ${m} min`:`${m} min`;
+}
+function gameFinished(g){
+  if(!g)return false;
+  let ps=g.players||g.state?.players||[];
+  return ps.some(p=>Number(p.total||0)>=10000);
+}
+function renderArchive(){
+  let savedBox=$("archiveList"),finishedBox=$("finishedList");
+  let saved=db.games.filter(g=>g.mode===mode&&!gameFinished(g));
+  let finished=db.games.filter(g=>g.mode===mode&&gameFinished(g));
+
+  savedBox.innerHTML=saved.length?saved.map(g=>`<div class="archive-item"><div><strong>💾 ${esc(g.name)}</strong><div class="sub">${g.players.map(p=>esc(p.name)).join(" · ")} · ${g.rounds.length} ${mode==="FR"?"manche(s)":"manșă(e)"}</div><div class="sub">${mode==="FR"?"Début":"Început"} : ${dateTime(g.startDate)}</div></div><div class="archive-actions"><button class="secondary" data-open-game="${g.id}">${T().resume}</button><button class="danger" data-delete-game="${g.id}">×</button></div></div>`).join(""):`<div class="sub">${T().noArchive}</div>`;
+
+  finishedBox.innerHTML=finished.length?finished.map(g=>{
+    let ps=g.players||[],champ=ps.find(p=>p.id===g.winnerId)||ps.filter(p=>Number(p.total||0)>=10000).sort((a,b)=>b.total-a.total)[0];
+    return `<div class="archive-item"><div><strong>🏆 ${esc(champ?.name||"Champion")}</strong><div class="sub">${ps.map(p=>`${esc(p.name)} : ${fmt(p.total||0)}`).join(" · ")}</div><div class="sub">${mode==="FR"?"Début":"Început"} : ${dateTime(g.startDate)} · ${mode==="FR"?"Fin":"Sfârșit"} : ${dateTime(g.endDate)} · ${mode==="FR"?"Durée":"Durată"} : ${esc(gameDuration(g))}</div></div><div class="archive-actions"><button class="secondary" data-open-finished="${g.id}">${T().view}</button><button class="danger" data-delete-finished="${g.id}">×</button></div></div>`;
+  }).join(""):`<div class="sub">${T().noFinished}</div>`;
+  $("finishedTitle").textContent=T().finished;
+}
+function show(id){["home","modeMenu","setup","game","rules"].forEach(x=>$(x).classList.toggle("hidden",x!==id));$("homeBtn").classList.toggle("hidden",id==="home");$("rulesBtn").classList.toggle("hidden",id!=="game")}
+function apply(){let l=T();$("headSub").textContent=l.sub;$("homeBtn").textContent=l.home;$("rulesBtn").textContent=l.rules;$("homeIntro").innerHTML="🇫🇷 Jouez avec vos vraies cartes ou vos dominos. L’application calcule et conserve les scores.<br>🇷🇴 Joacă cu cărți sau domino. Aplicația calculează și păstrează scorurile.";$("modeMenuTitle").textContent=mode==="FR"?"🇫🇷":"🇷🇴";$("newModeGameBtn").textContent=l.newgame;$("finishedModeBtn").textContent=l.finished;$("archiveTitle").textContent=l.archive;renderArchive()}
+function setup(m){mode=m;apply();let l=T();$("setupTitle").textContent=l.setup;$("nameLabel").textContent=l.name;$("playersLabel").textContent=l.players;$("startBtn").textContent=l.start;$("backBtn").textContent=l.back;renderInputs();show("setup")}
+function renderInputs(){let n=+$("playerCount").value,o="";for(let i=0;i<n;i++)o+=`<div class="field"><label>${mode==="FR"?"Joueur":"Jucător"} ${i+1}</label><input class="pname" value=""></div>`;$("playerInputs").innerHTML=o}
+document.querySelectorAll("[data-mode]").forEach(b=>b.onclick=()=>{
+  mode=b.dataset.mode;
+  apply();
+  show("modeMenu");
+});
+$("newModeGameBtn").onclick=()=>setup(mode);
+$("finishedModeBtn").onclick=()=>{
+  $("finishedCard").classList.toggle("hidden");
+};
+$("playerCount").onchange=renderInputs;
+$("backBtn").onclick=()=>show("modeMenu");
+$("startBtn").onclick=()=>{let names=[...document.querySelectorAll(".pname")].map((x,i)=>x.value.trim()||(mode==="FR"?"Joueur ":"Jucător ")+(i+1));state={id:Date.now(),name:$("gameName").value.trim()||"Canasta",mode,players:names.map((name,id)=>({id,name,total:0})),rounds:[],rules:{...(db.rules[mode]||DEF[mode])},target:10000,closer:null,startDate:new Date().toISOString(),endDate:null};upsertGame(state);save();renderGame();show("game")};
+$("homeBtn").onclick=()=>{
+  if(state&&!viewingFinished)upsertGame(state);
+  save();
+  show("home");
+};
+// Les parties sauvegardées se reprennent depuis le menu FR ou RO.
+
+$("backFinishedBtn").onclick=()=>{viewingFinished=false;state=null;db.current=null;save();show("modeMenu");renderArchive()};
+$("newGameBtn").onclick=()=>{if(confirm(mode==="FR"?"Créer une nouvelle partie ?":"Creezi o partidă nouă?")){state=null;db.current=null;save();show("home")}};
+$("archiveList").onclick=e=>{
+  let o=e.target.closest("[data-open-game]"),d=e.target.closest("[data-delete-game]");
+  if(o){let g=db.games.find(x=>x.id===+o.dataset.openGame);if(g){state=g;mode=g.mode;viewingFinished=false;db.current=g;save();renderGame();show("game")}}
+  if(d&&confirm(mode==="FR"?"Supprimer cette sauvegarde ?":"Ștergi această salvare?")){let id=+d.dataset.deleteGame;db.games=db.games.filter(g=>g.id!==id);if(db.current?.id===id)db.current=null;save();renderArchive()}
+};
+$("finishedList").onclick=e=>{
+  let o=e.target.closest("[data-open-finished]"),d=e.target.closest("[data-delete-finished]");
+  if(o){let g=db.games.find(x=>x.id===+o.dataset.openFinished);if(g){state=g;mode=g.mode;viewingFinished=true;db.current=null;save();renderGame();show("game")}}
+  if(d&&confirm(mode==="FR"?"Supprimer cette partie finie ?":"Ștergi această partidă finalizată?")){let id=+d.dataset.deleteFinished;db.games=db.games.filter(g=>g.id!==id);save();renderArchive()}
+};
+function renderGame(){
+  mode=state.mode;apply();let l=T();
+  $("gameTitle").textContent=(mode==="FR"?"🇫🇷 ":"🇷🇴 ")+state.name;
+  $("gameMeta").textContent=`${state.players.length} ${mode==="FR"?"joueurs":"jucători"} · ${mode==="FR"?"objectif":"țintă"} 10 000`;
+  $("scoreTitle").textContent=l.score;$("roundBtn").textContent=l.round;$("newGameBtn").textContent=l.newgame;
+  $("backFinishedBtn").textContent=l.backFinished;
+  $("backFinishedBtn").classList.toggle("hidden",!viewingFinished);
+  $("roundBtn").classList.toggle("hidden",viewingFinished);
+  $("newGameBtn").classList.toggle("hidden",viewingFinished);
+  renderScore();renderHistory()
+}
+function renderScore(){$("scoreboard").innerHTML=state.players.map(p=>{let q=Math.max(0,Math.min(100,p.total/10000*100));return `<div class="player"><h3>${esc(p.name)}</h3><div class="bigscore">${fmt(p.total)} ${mode==="FR"?"pts":"puncte"}</div><div class="sub">${Math.round(q)}%</div><div class="bar"><i style="width:${q}%"></i></div></div>`}).join("")}
+function C(k,l,pts,v,i){return `<div class="counter"><div class="ctext"><span>${l}</span></div><button class="mini" type="button" data-a="-" data-k="${k}" data-i="${i}">−</button><div class="count" data-c="${k}">${v}</div><button class="mini" type="button" data-a="+" data-k="${k}" data-i="${i}">+</button><div class="pts">${pts>0?"+":""}${fmt(pts)}</div></div>`}
+function cardGrid(items,i){return `<div class="card-count-grid">${items.map(x=>C(x[0],x[1],x[2],x[3]||0,i)).join("")}</div>`}
+function ensureCanastaCustomRules(){
+  state.rules=state.rules||{};
+  if(state.rules.canasta3==null)state.rules.canasta3=3000;
+  if(state.rules.canastaValues==null)state.rules.canastaValues=2000;
+  Object.keys(state.rules).forEach(k=>{
+    if(["canasta3","canastaValues","canastaNormal","canastaAce","canastaWildNormal","canastaWildAce","red3","turned","close"].includes(k))return;
+    let n=String(k).toLowerCase().normalize("NFD").replace(/[\\u0300-\\u036f]/g,"");
+    if(n==="canasta de 3"||n==="canasta de valeurs"||n==="canasta de valori")delete state.rules[k];
+  });
+}
+function customRules(){
+  ensureCanastaCustomRules();
+  let base=new Set(["canastaNormal","canastaAce","canastaWildNormal","canastaWildAce","red3","turned","close","canasta3","canastaValues"]);
+  return Object.keys(state.rules||{}).filter(k=>!base.has(k)).map(k=>({key:k,label:k,pts:Number(state.rules[k])||0,can:/canasta/i.test(k)}));
+}
+function customRuleScore(r){return customRules().reduce((sum,x)=>sum+(r?.[x.key]||0)*x.pts,0)}
+function hasCanasta(r){return (r?.canastaNormal||0)+(r?.canastaAce||0)+(r?.canastaWildNormal||0)+(r?.canastaWildAce||0)+(r?.canasta3||0)+(r?.canastaValues||0)+customRules().filter(x=>x.can).reduce((n,x)=>n+(r?.[x.key]||0),0)>0}
+function liveScore(r){
+  r=r||{};let can=hasCanasta(r);
+  let canastaPoints=(r.canastaNormal||0)*state.rules.canastaNormal+(r.canastaAce||0)*state.rules.canastaAce+
+  (r.canastaWildNormal||0)*state.rules.canastaWildNormal+(r.canastaWildAce||0)*state.rules.canastaWildAce+
+  (r.canasta3||0)*state.rules.canasta3+(r.canastaValues||0)*state.rules.canastaValues+customRuleScore(r);
+  let laid=(r.laid46||0)*5+(r.laid7k||0)*10+(r.laidAce||0)*25+(r.laid2||0)*20+(r.laidJoker||0)*50+(r.laid3||0)*state.rules.red3;
+  let hand=(r.hand46||0)*5+(r.hand7k||0)*10+(r.handAce||0)*25+(r.hand2||0)*20+(r.handJoker||0)*50+(r.hand3||0)*100;
+  let negative=(r.neg46||0)*5+(r.neg7k||0)*10+(r.negAce||0)*25+(r.neg2||0)*20+(r.negJoker||0)*50+(r.neg3||0)*100;
+  let s=(can?canastaPoints+laid-hand:-negative)+(r.free||0);
+  return{can,s}
+}
+function refreshLive(){
+  let panels=[...document.querySelectorAll("#roundPlayersInputs .player-round")];
+  panels.forEach(panel=>{
+    let i=Number(panel.dataset.player),p=state.players[i];
+    if(!p)return;
+    let lv=liveScore(p.round),c=panel.querySelector(".live-check"),t=panel.querySelector(".live-total");
+    if(c){
+      c.className="live-check "+(lv.can?"ok":"bad");
+      if(c.lastElementChild)c.lastElementChild.textContent=lv.can?"✓ OK":"✕ "+(mode==="FR"?"Aucune":"Nicio");
+    }
+    if(t){
+      t.className="live-total "+(lv.s>=0?"ok":"bad");
+      if(t.lastElementChild)t.lastElementChild.textContent=(lv.s>=0?"+":"")+fmt(lv.s);
+    }
+  });
+}
+function playerRows(p,i,isCloser=false){
+  let r=p.round||{},fr=mode==="FR",confirmed=isCloser||r.canastaConfirmed===true;
+  let lv=liveScore(r);
+  let choice=isCloser?`<div class="info">🏆 ${fr?"Joueur ayant fermé : Canasta obligatoire.":"Jucătorul care a închis trebuie să aibă Canastă."}</div>`:`<div class="canasta-choice"><div class="section-title">🏆 ${fr?"Canasta ?":"Canastă ?"}</div><div class="closer"><button type="button" class="${r.canastaConfirmed===true?"active":""}" data-canasta="yes" data-i="${i}">✅ ${fr?"Oui":"Da"}</button><button type="button" class="${r.canastaConfirmed===false?"active":""}" data-canasta="no" data-i="${i}">❌ ${fr?"Non":"Nu"}</button></div></div>`;
+  // Tant que le joueur restant n'a pas répondu Oui/Non, n'afficher aucun scoring.
+  if(!isCloser && r.canastaConfirmed!==true && r.canastaConfirmed!==false)return choice;
+  let left="",right="";
+  if(confirmed){
+    left+=`<div class="section-title">🏆 ${fr?"CANASTAS":"CANASTE"}</div>`;
+    left+=C("canastaNormal",fr?"Canasta 4 → Roi":"Canasta 4 → Rege",state.rules.canastaNormal,r.canastaNormal||0,i);
+    left+=C("canastaAce",fr?"Canasta d’As":"Canasta de Ași",state.rules.canastaAce,r.canastaAce||0,i);
+    left+=C("canasta3",T().can3,state.rules.canasta3,r.canasta3||0,i);
+    right+=`<div class="section-title">🃏 ${fr?"CANASTAS VALEURS":"CANASTE DE VALORI"}</div>`;
+    right+=C("canastaWildNormal",fr?"4 → Roi":"4 → Rege",state.rules.canastaWildNormal,r.canastaWildNormal||0,i);
+    right+=C("canastaWildAce",fr?"As":"Ași",state.rules.canastaWildAce,r.canastaWildAce||0,i);
+    right+=C("canastaValues",T().canValues,state.rules.canastaValues,r.canastaValues||0,i);
+    left+=`<div class="section-title laid-section-title">🃏 ${fr?"CARTES POSÉES HORS CANASTA":"CĂRȚI PUSE JOS FĂRĂ CANASTĂ"}</div>`;
+    left+=cardGrid([["laid46",fr?"4 à 6":"4 – 6",5,r.laid46], ["laid7k",fr?"7 à Roi":"7 – Rege",10,r.laid7k], ["laidAce",fr?"As":"Ași",25,r.laidAce], ["laid2","2",20,r.laid2], ["laidJoker","Joker",50,r.laidJoker], ["laid3",fr?"3":"3",100,r.laid3]],i);
+    if(!isCloser){
+      right+=`<div class="section-title hand-section-title">🖐️ ${fr?"CARTES ENCORE EN MAIN":"CĂRȚI RĂMASE ÎN MÂNĂ"}</div>`;
+      right+=cardGrid([["hand46",fr?"4 à 6":"4 – 6",-5,r.hand46], ["hand7k",fr?"7 à Roi":"7 – Rege",-10,r.hand7k], ["handAce",fr?"As":"Ași",-25,r.handAce], ["hand2","2",-20,r.hand2], ["handJoker","Joker",-50,r.handJoker], ["hand3","3",-100,r.hand3]],i);
+    }
+    let otherCustom=customRules().filter(x=>!x.can);
+    if(otherCustom.length){right+=`<div class="section-title">✨ ${fr?"RÈGLES PERSONNALISÉES":"REGULI PERSONALIZATE"}</div>`;otherCustom.forEach(x=>right+=C(x.key,x.label,x.pts,r[x.key]||0,i));}
+  }else{
+    left+=`<div class="section-title">❌ ${fr?"CARTES NÉGATIVES":"CĂRȚI NEGATIVE"}</div><div class="info">${fr?"Toutes les cartes sont négatives puisque le joueur n’a pas de Canasta.":"Toate cărțile sunt negative deoarece jucătorul nu are Canastă."}</div>`;
+    right="";
+    left+=cardGrid([["neg46",fr?"4 à 6":"4 – 6",-5,r.neg46], ["neg7k",fr?"7 à Roi":"7 – Rege",-10,r.neg7k], ["negAce",fr?"As":"Ași",-25,r.negAce], ["neg2","2",-20,r.neg2], ["negJoker","Joker",-50,r.negJoker], ["neg3",fr?"3":"3",-100,r.neg3]],i);
+  }
+  return choice+`<div class="calc-columns${right?"":" single-column"}"><div class="calc-column">${left}</div>${right?`<div class="calc-column">${right}</div>`:""}</div><div class="live-total ${lv.s>=0?"ok":"bad"}"><span>${fr?"Total provisoire":"Total provizoriu"}</span><span>${lv.s>=0?"+":""}${fmt(lv.s)}</span></div><div class="section-title free-title">➕ ${T().free}</div><div class="free"><input type="number" step="1" data-free="${i}" value="${r.free||0}"><span class="sub">${T().freeHelp}</span></div><div class="quick-points" aria-label="Points rapides">${[20,50,100,300,500].map(v=>{let sign=confirmed?1:-1;return `<button type="button" data-quick="${sign*v}" data-i="${i}">${sign>0?"+":"−"}${v}</button>`;}).join("")}</div>`;
+}
+
+function openRoundInfo(){
+  let fr=mode==="FR";
+  $("roundInfoTitle").textContent=T().infoTitle;
+  $("closeRoundInfo").textContent=T().infoClose;
+  $("roundInfoContent").innerHTML=fr?`
+    <div class="info"><strong>🎯 Objectif</strong><br>Atteindre 10 000 points.</div>
+    <div class="info" style="margin-top:10px"><strong>🏆 Canasta naturelle</strong><br>7 cartes naturelles de même valeur, sans 2 ni Joker.<br>4 → Roi : +500 points · As : +1 000 points</div>
+    <div class="info" style="margin-top:10px"><strong>🃏 Canasta de valeurs</strong><br>Minimum 4 cartes naturelles identiques, avec jusqu’à 3 cartes bonus (2/Joker) pour arriver à 7.<br>4 → Roi : +300 points · As : +500 points</div>
+    <div class="info" style="margin-top:10px"><strong>⭐ Règles personnalisées</strong><br>Canasta de 3 : +${fmt(state.rules.canasta3)} points<br>Canasta de valeurs : +${fmt(state.rules.canastaValues)} points</div>
+    <div class="info" style="margin-top:10px"><strong>🃏 Valeur des cartes</strong><br>Joker : +50 points<br>2 : +20 points<br>As : +25 points<br>3 rouge : +100 points<br>4–6 : +5 points<br>7–Roi : +10 points<br>Les cartes encore en main sont comptées en négatif.</div>
+    <div class="info" style="margin-top:10px"><strong>🚦 Conditions pour commencer à jouer</strong><br>
+      0 à 1 499 points : minimum 45 points à poser, sans carte de valeur (2 ou Joker).<br>
+      1 500 à 2 999 points : minimum 90 points à poser, avec maximum 1 carte de valeur (2 ou Joker).<br>
+      3 000 à 4 999 points : minimum 120 points à poser, avec maximum 2 cartes de valeur (2 ou Joker).<br>
+      5 000 points et + : il faut obligatoirement avoir une Canasta pour pouvoir jouer.<br>
+      Le seuil dépend du total de points des cartes posées, pas du nombre de cartes.
+    </div>
+    <div class="info" style="margin-top:10px"><strong>🎴 Piocher ou prendre la carte jetée</strong><br>À ton tour, tu peux piocher normalement ou prendre la carte jetée par le joueur précédent.<br>Si tu prends la carte jetée, tu dois obligatoirement pouvoir la poser immédiatement : tu ne peux pas simplement la prendre et la garder en main.</div>
+    <div class="info" style="margin-top:10px"><strong>✂️ Couper la pile</strong><br>Tu peux couper la pile sur une carte qui t’intéresse si tu peux la poser avec au moins 2 autres cartes identiques dans ta main. Tu poses donc au minimum 3 cartes de cette valeur, puis tu récupères toutes les cartes situées après la carte sur laquelle tu as coupé.<br>Les cartes récupérées peuvent ensuite compléter tes jeux et être posées directement. Exemple : tu as déjà 6 cartes de 8 posées et tu récupères un 8 en coupant → tu fais ta Canasta de 8. Si tu as 3 Rois posés et récupères un Roi → tu as maintenant 4 Rois.</div>
+    <div class="info" style="margin-top:10px"><strong>🚪 Fermeture</strong><br>Le joueur qui ferme doit avoir au moins une Canasta. Fermeture : +${fmt(state.rules.close)} points.</div>
+    <div class="info" style="margin-top:10px"><strong>🎴 Carte retournée</strong><br>Correspondance exacte : +${fmt(state.rules.turned)} points avec Canasta, −${fmt(state.rules.turned)} points sans Canasta.<br>Un 2 ou un Joker double toute la manche.</div>
+  `:`
+    <div class="info"><strong>🎯 Obiectiv</strong><br>Ajungi la 10.000 de puncte.</div>
+    <div class="info" style="margin-top:10px"><strong>🏆 Canastă naturală</strong><br>7 cărți naturale de aceeași valoare, fără 2 sau Joker.<br>4 → Rege : +500 puncte · As : +1.000 puncte</div>
+    <div class="info" style="margin-top:10px"><strong>🃏 Canastă de valori</strong><br>Minimum 4 cărți naturale identice, cu până la 3 cărți bonus (2/Joker) pentru a ajunge la 7.<br>4 → Rege : +300 puncte · As : +500 puncte</div>
+    <div class="info" style="margin-top:10px"><strong>⭐ Reguli personalizate</strong><br>Canasta de 3 : +${fmt(state.rules.canasta3)} puncte<br>Canasta de valori : +${fmt(state.rules.canastaValues)} puncte</div>
+    <div class="info" style="margin-top:10px"><strong>🃏 Valoarea cărților</strong><br>Joker : +50 puncte<br>2 : +20 puncte<br>As : +25 puncte<br>3 roșu : +100 puncte<br>4–6 : +5 puncte<br>7–Rege : +10 puncte<br>Cărțile rămase în mână se scad.</div>
+    <div class="info" style="margin-top:10px"><strong>🚦 Condiții pentru a începe să joci</strong><br>
+      0–1 499 puncte : minimum 45 de puncte puse jos, fără cărți de valoare (2 sau Joker).<br>
+      1 500–2 999 puncte : minimum 90 de puncte puse jos, cu maximum 1 carte de valoare (2 sau Joker).<br>
+      3 000–4 999 puncte : minimum 120 de puncte puse jos, cu maximum 2 cărți de valoare (2 sau Joker).<br>
+      5 000 de puncte și peste : trebuie obligatoriu să ai o Canastă pentru a putea juca.<br>
+      Pragul depinde de totalul punctelor cărților puse jos, nu de numărul de cărți.
+    </div>
+    <div class="info" style="margin-top:10px"><strong>🎴 Tragi sau iei cartea aruncată</strong><br>La rândul tău, poți trage o carte sau poți lua cartea aruncată de jucătorul precedent.<br>Dacă iei cartea aruncată, trebuie obligatoriu să o poți pune imediat: nu poți pur și simplu să o iei și să o păstrezi în mână.</div>
+    <div class="info" style="margin-top:10px"><strong>✂️ Tai teancul</strong><br>Poți tăia teancul la o carte care te interesează dacă o poți pune împreună cu cel puțin 2 alte cărți identice din mâna ta. Pui astfel minimum 3 cărți de aceeași valoare, apoi iei toate cărțile aflate după cartea la care ai tăiat.<br>Cărțile recuperate pot apoi completa combinațiile tale și pot fi puse imediat. Exemplu : ai deja 6 cărți de 8 puse jos și recuperezi un 8 prin tăiere → faci Canasta de 8. Dacă ai 3 Regi puși jos și recuperezi un Rege → ai acum 4 Regi.</div>
+    <div class="info" style="margin-top:10px"><strong>🚪 Închiderea</strong><br>Jucătorul care închide trebuie să aibă cel puțin o Canastă. Închidere : +${fmt(state.rules.close)} puncte.</div>
+    <div class="info" style="margin-top:10px"><strong>🎴 Cartea întoarsă</strong><br>Potrivire exactă : +${fmt(state.rules.turned)} puncte cu Canastă, −${fmt(state.rules.turned)} puncte fără Canastă.<br>Un 2 sau un Joker dublează toată manșa.</div>
+  `;
+  $("rulesInfoModal").classList.remove("hidden");
+}
+function openRound(){
+  let l=T();
+  state.players.forEach(p=>p.round={});
+  state.closer=null;
+  $("roundTitle").textContent=l.roundTitle;
+  $("roundSub").textContent=l.roundSub;
+  $("roundInfoBtn").textContent="ⓘ";
+  $("cancelBtn").textContent=l.cancel;
+  $("turnedTitle").textContent=l.turned;
+  $("valueLabel").textContent=l.value;
+  $("suitLabel").textContent=l.suit;
+  $("ownerLabel").textContent=l.owner;
+  $("validateBtn").textContent=l.validate;
+  $("historyTitle").textContent=l.history;
+
+  $("roundPlayers").innerHTML=`
+    <div class="card" style="grid-column:1/-1">
+      <div class="section-title">1️⃣ ${mode==="FR"?"Qui a fermé la manche ?":"Cine a închis manșa?"}</div>
+      <div class="closer" id="closerButtons"></div>
+    </div>
+    <div class="card hidden" id="roundStep2" style="grid-column:1/-1">
+      <div class="section-title">2️⃣ ${mode==="FR"?"Canasta des joueurs restants":"Canasta jucătorilor rămași"}</div>
+      <div class="round-grid" id="roundPlayersInputs"></div>
+    </div>`;
+  $("closerButtons").innerHTML=state.players.map(p=>`<button data-close="${p.id}">${esc(p.name)}</button>`).join("");
+
+  let vals=["","3","4","5","6","7","8","9","10","J","Q","K","A","2","Joker"];
+  $("turnedValue").innerHTML=vals.map(v=>`<option value="${v}">${v||"—"}</option>`).join("");
+  $("turnedSuit").innerHTML=["","♠","♥","♦","♣"].map(v=>`<option value="${v}">${v||"—"}</option>`).join("");
+  $("turnedOwner").innerHTML=`<option value="-1">${l.none}</option>`+state.players.map(p=>`<option value="${p.id}">${esc(p.name)}</option>`).join("");
+
+  $("closerButtons").onclick=e=>{
+    let b=e.target.closest("[data-close]");if(!b)return;
+    state.closer=+b.dataset.close;
+    document.querySelectorAll("[data-close]").forEach(x=>x.classList.remove("active"));
+    b.classList.add("active");
+
+    state.players[state.closer].round={...(state.players[state.closer].round||{}),canastaConfirmed:true};
+    state.roundPlayerIndex=0;
+    renderCurrentRoundPlayer();
+    $("roundStep2").classList.remove("hidden");
+    updateTurn();
+    $("roundStep2").scrollIntoView({behavior:"smooth",block:"start"});
+  };
+
+  updateTurn();
+  $("roundCard").classList.remove("hidden");
+  window.scrollTo({top:$("roundCard").offsetTop-10,behavior:"smooth"});
+}
+
+function renderCurrentRoundPlayer(){
+  let ordered=[state.players.find(p=>p.id===state.closer),...state.players.filter(p=>p.id!==state.closer)].filter(Boolean);
+  let idx=state.roundPlayerIndex||0,p=ordered[idx];
+  if(!p){$("roundPlayersInputs").innerHTML=`<div class="info">${mode==="FR"?"Tous les joueurs ont été saisis.":"Toți jucătorii au fost completați."}</div>`;return;}
+  let i=state.players.indexOf(p),isCloser=i===state.closer;
+  const stepTitle=$('roundStep2').querySelector('.section-title');
+  if(stepTitle) stepTitle.textContent=`2️⃣ ${isCloser?(mode==="FR"?"Points du joueur ayant fermé":"Punctele jucătorului care a închis"):(mode==="FR"?"Canasta des joueurs restants":"Canasta jucătorilor rămași")}`;
+  const nextLabel=mode==="FR"?"Joueur suivant →":"Jucătorul următor →";
+  const nextButton=idx<ordered.length-1?`<button type="button" class="primary next-player" id="nextPlayerBtn">${nextLabel}</button>`:"";
+  $("roundPlayersInputs").innerHTML=`<div class="player-round" data-player="${i}"><h3>${esc(p.name)}${isCloser?" 🏆":""}</h3>${playerRows(p,i,isCloser)}${nextButton}</div>`;
+  if(idx<ordered.length-1) $("nextPlayerBtn").onclick=()=>{
+    if(!isCloser && typeof (p.round||{}).canastaConfirmed!=="boolean")return alert(mode==="FR"?"Choisis Canasta : Oui ou Non.":"Alege Canastă: Da sau Nu.");
+    state.roundPlayerIndex=idx+1;
+    renderCurrentRoundPlayer();
+    // Revenir réellement en haut du panneau du joueur suivant
+    requestAnimationFrame(()=>{
+      const panel=$("roundPlayersInputs").querySelector(".player-round");
+      if(panel){
+        const y=panel.getBoundingClientRect().top+window.pageYOffset-24;
+        window.scrollTo({top:Math.max(0,y),behavior:"smooth"});
+      }
+    });
+  };
+}
+
+function updateTurn(){let v=$("turnedValue").value;$("turnedInfo").textContent=v==="2"||v==="Joker"?T().turnDouble:v?T().turnNormal:T().turnNone}
+$("roundInfoBtn").onclick=openRoundInfo;$("closeRoundInfo").onclick=()=>$("rulesInfoModal").classList.add("hidden");
+$("turnedValue").onchange=updateTurn;$("turnedOwner").onchange=updateTurn;$("turnedSuit").onchange=updateTurn;
+$("roundPlayers").oninput=e=>{
+  let input=e.target.closest("[data-free]");if(!input)return;
+  let i=+input.dataset.free,p=state.players[i];if(!p)return;
+  p.round=p.round||{};p.round.free=parseInt(input.value||0,10)||0;refreshLive();
+};
+$("roundPlayers").onclick=e=>{
+  let cb=e.target.closest("[data-canasta]");
+  if(cb){
+    let i=+cb.dataset.i,p=state.players[i];if(!p)return;
+    p.round=p.round||{};p.round.canastaConfirmed=cb.dataset.canasta==="yes";
+    let panel=cb.closest(".player-round");
+    if(panel){renderCurrentRoundPlayer();}
+    return;
+  }
+  let quick=e.target.closest("[data-quick]");
+  if(quick){let i=+quick.dataset.i,p=state.players[i];if(!p)return;p.round=p.round||{};p.round.free=(p.round.free||0)+(+quick.dataset.quick||0);let input=document.querySelector(`[data-free="${i}"]`);if(input)input.value=p.round.free;refreshLive();return;}
+  let b=e.target.closest("[data-a]");if(!b)return;
+  let p=state.players[+b.dataset.i],k=b.dataset.k;p.round=p.round||{};
+  p.round[k]=Math.max(0,(p.round[k]||0)+(b.dataset.a==="+"?1:-1));
+  b.parentElement.querySelector("[data-c='"+k+"']").textContent=p.round[k];refreshLive();
+};
+$("roundBtn").onclick=openRound;$("cancelBtn").onclick=()=>$("roundCard").classList.add("hidden");
+$("validateBtn").onclick=()=>{if(state.closer===null)return alert(mode==="FR"?"Choisis le joueur qui ferme la manche.":"Alege jucătorul care închide manșa.");let remainingPlayers=state.players.filter(p=>p.id!==state.closer);if(remainingPlayers.some(p=>typeof (p.round||{}).canastaConfirmed!=="boolean"))return alert(mode==="FR"?"Complète le choix Canasta de chaque joueur.":"Completează alegerea Canastă pentru fiecare jucător.");let tv=$("turnedValue").value,own=+$("turnedOwner").value,dbl=tv==="2"||tv==="Joker",scores={};state.players.forEach((p,i)=>{
+  let r=p.round||{},can=r.canastaConfirmed===true,s=(r.canastaNormal||0)*state.rules.canastaNormal+(r.canastaAce||0)*state.rules.canastaAce+(r.canastaWildNormal||0)*state.rules.canastaWildNormal+(r.canastaWildAce||0)*state.rules.canastaWildAce+(r.canasta3||0)*state.rules.canasta3+(r.canastaValues||0)*state.rules.canastaValues+customRuleScore(r);
+  let positiveCards=(r.laid46||0)*5+(r.laid7k||0)*10+(r.laidAce||0)*25+(r.laid2||0)*20+(r.laidJoker||0)*50+(r.laid3||0)*state.rules.red3;
+  let handCards=(r.hand46||0)*5+(r.hand7k||0)*10+(r.handAce||0)*25+(r.hand2||0)*20+(r.handJoker||0)*50+(r.hand3||0)*100;
+  let negativeCards=(r.neg46||0)*5+(r.neg7k||0)*10+(r.negAce||0)*25+(r.neg2||0)*20+(r.negJoker||0)*50+(r.neg3||0)*100;
+  s+=can?positiveCards-handCards:-negativeCards;
+  s+=(r.free||0);
+  if(own===i&&tv)s+=can?state.rules.turned:-state.rules.turned;
+  if(i===state.closer)s+=state.rules.close;
+  if(dbl)s*=2;
+  scores[p.id]=s;p.total+=s
+});state.rounds.push({date:new Date().toISOString(),scores,closer:state.closer,turned:{value:tv,suit:$("turnedSuit").value,owner:own,double:dbl},detail:Object.fromEntries(state.players.map(p=>[p.id,{...(p.round||{})}]))});state.players.forEach(p=>delete p.round);db.current=state;save();$("roundCard").classList.add("hidden");renderGame();checkWinner()};
+function renderHistory(){
+  if(!state.rounds.length)return $("history").innerHTML=`<div class="sub">${T().noHistory}</div>`;
+  let fr=mode==="FR";
+  $("history").innerHTML=[...state.rounds].reverse().map((r,j)=>{
+    let no=state.rounds.length-j;
+    return `<div class="history-item"><div class="history-head"><strong>#${no}</strong><div>${state.players.map(p=>`${esc(p.name)} ${r.scores[p.id]>=0?"+":""}${fmt(r.scores[p.id])}`).join(" · ")}</div><button class="history-toggle" data-history="${no}">${T().roundDetail}</button></div>
+    <div class="history-detail hidden" id="detail-${no}">
+      ${state.players.map(p=>{
+        let d=r.detail?.[p.id]||{},canCount=(d.canastaNormal||0)+(d.canastaAce||0)+(d.canastaWildNormal||0)+(d.canastaWildAce||0)+(d.canasta3||0)+(d.canastaValues||0)+customRules().filter(x=>x.can).reduce((n,x)=>n+(d[x.key]||0),0);
+        return `<div><strong>${esc(p.name)}</strong> — ${fr?"Canastas":"Canaste"}: ${canCount} · ${T().free}: ${d.free||0} · ${fr?"Score":"Scor"}: ${r.scores[p.id]>=0?"+":""}${fmt(r.scores[p.id])}</div>
+        <div>${d.canasta3?`${esc(T().can3)} : ${d.canasta3} × +${fmt(state.rules.canasta3)}`:""}${d.canastaValues?`${d.canasta3?" · ":""}${esc(T().canValues)} : ${d.canastaValues} × +${fmt(state.rules.canastaValues)}`:""}${customRules().filter(x=>d[x.key]).map(x=>`${d.canasta3||d.canastaValues?" · ":""}${esc(x.label)} : ${d[x.key]} × ${x.pts>0?"+":""}${fmt(x.pts)}`).join("")}</div>`;
+      }).join("")}
+      <div>${fr?"Ferme":"Închide"} : ${esc(state.players[r.closer]?.name||"")}</div>
+      <div>${T().turned} : ${esc(r.turned?.value||"—")} ${esc(r.turned?.suit||"")} ${r.turned?.double?"· ×2":""}</div>
+    </div></div>`;
+  }).join("");
+}
+function checkWinner(){
+  let w=state.players.filter(p=>p.total>=10000).sort((a,b)=>b.total-a.total)[0];
+  if(!w)return;
+  if(!state.endDate)state.endDate=new Date().toISOString();
+  state.finished=true;
+  upsertGame(state);
+  db.current=null;
+  save();
+  $("winnerName").textContent=w.name;$("winnerText").textContent=mode==="FR"?"Tu viens d’atteindre 10 000 points 🎉":"Ai atins 10.000 de puncte 🎉";$("winnerFun").textContent=FUN[mode][Math.floor(Math.random()*FUN[mode].length)];$("winnerModal").classList.remove("hidden")}
+$("winnerNewGame").onclick=()=>{$("winnerModal").classList.add("hidden");state=null;db.current=null;save();show("home");renderResume();renderArchive()};
+function openRules(){editRules={...state.rules};$("rulesTitle").textContent=T().rulesTitle;$("rulesIntro").textContent=T().rulesIntro;$("closeRules").textContent=T().home;$("saveRules").textContent=T().save;$("resetRules").textContent=T().reset;drawRules();show("rules")}
+function drawRules(){ensureCanastaCustomRules();let fr=mode==="FR",names=fr?{canastaNormal:"Canasta 4 → Roi",canastaAce:"Canasta d’As",canastaWildNormal:"Canasta Valeurs 4 → Roi",canastaWildAce:"Canasta Valeurs d’As",canasta3:"Canasta de 3",canastaValues:"Canasta de valeurs",red3:"3 rouge",turned:"Carte retournée",close:"Fermeture"}:{canastaNormal:"Canasta 4 → Rege",canastaAce:"Canasta de Ași",canastaWildNormal:"Canasta de valori 4 → Rege",canastaWildAce:"Canasta de valori de Ași",canasta3:"Canasta de 3",canastaValues:"Canasta de valori",red3:"3 roșu",turned:"Carte întoarsă",close:"Închidere"};let o=Object.keys(editRules).map(k=>`<div class="admin"><label>${esc(names[k]||k)}</label><input type="number" data-r="${esc(k)}" value="${editRules[k]}"><button class="danger" data-d="${esc(k)}">${T().delete}</button></div>`).join("");o+=`<button class="secondary" id="addRule">+ ${fr?"Ajouter une règle":"Adaugă o regulă"}</button>`;$("ruleEditor").innerHTML=o;document.querySelectorAll("[data-r]").forEach(x=>x.oninput=()=>editRules[x.dataset.r]=parseInt(x.value||0,10)||0);document.querySelectorAll("[data-d]").forEach(x=>x.onclick=()=>{delete editRules[x.dataset.d];drawRules()});$("addRule").onclick=()=>{let n=prompt(fr?"Nom de la règle :":"Numele regulii:");if(!n)return;let v=parseInt(prompt(fr?"Valeur en points :":"Valoare în puncte:"),10);editRules[n]=Number.isFinite(v)?v:0;drawRules()}}
+$("history").onclick=e=>{let b=e.target.closest("[data-history]");if(!b)return;let d=$("detail-"+b.dataset.history);d.classList.toggle("hidden");b.textContent=d.classList.contains("hidden")?T().roundDetail:T().hideDetail};
+$("rulesBtn").onclick=openRules;$("closeRules").onclick=()=>show("game");$("saveRules").onclick=()=>{db.rules[mode]={...editRules};state.rules={...editRules};db.current=state;save();show("game");renderGame()};$("resetRules").onclick=()=>{editRules={...DEF[mode]};drawRules()};
+async function init(){   await loadFromSupabase();   apply();   renderArchive(); }  init();
+  </script>
+ </body>
+</html>
