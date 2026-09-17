@@ -581,7 +581,16 @@ header .secondary{background:#ffffff18;color:#fff;border:1px solid #ffffff35}
 </div></div>
 <div class="modal hidden" id="winnerModal"><div class="modal-box"><h2>🏆 BRAVO !</h2><div class="winner" id="winnerName"></div><p id="winnerText"></p><div class="fun" id="winnerFun"></div><button class="primary" id="winnerNewGame">🔥 Nouvelle partie</button></div></div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
+const SUPABASE_URL = "https://rxcgdzfsucarycpaofzh.supabase.co";
+const SUPABASE_KEY = "sb_publishable_PwFys3OfZktVTtzAdP44PA_q8_0gXa2";
+
+const supabaseClient = supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
+  
 const KEY="canasta_score_v4";
 const DEF={FR:{canastaNormal:500,canastaAce:1000,canastaWildNormal:300,canastaWildAce:500,red3:100,turned:50,close:200},RO:{canastaNormal:500,canastaAce:1000,canastaWildNormal:300,canastaWildAce:500,red3:100,turned:50,close:200}};
 const TEXT={
