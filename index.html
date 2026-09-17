@@ -633,7 +633,7 @@ if(!db.games)db.games=[];
 if(db.current&&!db.games.some(g=>g.id===db.current.id))db.games.push(db.current);
 let state=null,mode="FR",editRules=null,viewingFinished=false;
 const $=id=>document.getElementById(id),esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])),fmt=n=>Number(n).toLocaleString(mode==="FR"?"fr-FR":"ro-RO"),T=()=>TEXT[mode];
-function save(){localStorage.setItem(KEY,JSON.stringify(db))}
+async function save(){   localStorage.setItem(KEY,JSON.stringify(db));    const { error } = await supabaseClient     .from("games")     .upsert({       id: "00000000-0000-0000-0000-000000000001",       name: "canasta",       data: db     });    if(error) console.error("Erreur Supabase :", error); }
 function upsertGame(g){
   g.finished=(g.players||[]).some(p=>Number(p.total||0)>=10000);
   let i=db.games.findIndex(x=>x.id===g.id);
